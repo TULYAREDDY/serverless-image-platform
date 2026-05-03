@@ -12,16 +12,6 @@ CloudGallery is a production-grade, full-stack image processing and hosting plat
 
 The system utilizes a decentralized flow to minimize server bottlenecks. The frontend communicates directly with the storage provider (Cloudinary) and the database (Supabase), delegating only specific compute-heavy operations to the Python backend.
 
-```text
-[ Client (Vanilla JS) ] 
-       |       |
-       |       +--(1) Auth & Metadata Sync---> [ Supabase (PostgreSQL + RLS) ]
-       |                                                ^
-       +-(2) Validate Hash-> [ Python backend (FastAPI) ] | (3) Fetch Hashes
-       |                                                v
-       +-(4) Direct Upload-> [ Cloudinary (Storage & CDN) ]
-```
-
 ## Detailed Feature Implementation
 
 ### Authentication and Row-Level Security (RLS)
@@ -107,8 +97,3 @@ UPLOAD_PRESET=your_cloudinary_unsigned_preset
 1. Serve the `index.html` file using any static file server (e.g., Live Server, Nginx, or Vercel).
 2. Ensure the backend is running locally on port `8000` to allow the duplicate detection API to function.
 
-## Future Improvements
-
-1. **Approximate Nearest Neighbor (ANN) Search:** As the dataset scales, linear iteration over the hash array will become a bottleneck. Integrating an ANN search index (like FAISS or pgvector in Supabase) would allow for O(log N) similarity lookups.
-2. **Serverless Migration:** The FastAPI backend can be containerized and deployed to a serverless platform (e.g., AWS Lambda, Google Cloud Run) to scale horizontally during high upload bursts.
-3. **Webhook Integration:** Implement Cloudinary webhooks to independently verify upload success and automatically sync the metadata to Supabase, eliminating the client-side database insertion entirely.
